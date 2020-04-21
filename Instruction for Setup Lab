@@ -1,0 +1,105 @@
+Instruction for Setup Lab:
+=============================================================================================================
+Inventory:                  Private IP            PublicIP                DNS:                                                 ssh
+AnsibleCLI:                 10.21.2.14            13.229.118.163          ip-10-21-2-14.ap-southeast-1.compute.internal        ssh -i "lab_gluster.pem" ubuntu@<public ip>
+AnsibleTower:               10.21.2.112           54.255.242.112          ip-10-21-2-112.ap-southeast-1.compute.internal       ssh -i "lab_gluster.pem" ubuntu@<public ip>
+Host:                       10.21.2.91            13.229.204.48           ip-10-21-2-91.ap-southeast-1.compute.internal        ssh -i "lab_gluster.pem" ubuntu@<public ip>
+=============================================================================================================
+1. (local) SCP pem file and WorkShop to Ansible1
+scp -i ~/.ssh/lab_gluster.pem ~/.ssh/lab_gluster.pem ubuntu@13.229.118.163:/home/ubuntu
+scp -i ~/.ssh/lab_gluster.pem -r ~/Work/Ansible/Lab_Setup ubuntu@13.229.118.163:/home/ubuntu
+
+2. (AnsibleCLI) Generate KeyFile and Trust (AnsibleCLI)
+chmod 400 ~/lab_gluster.pem
+eval $(ssh-agent)
+ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa
+ssh-add /home/ubuntu/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.14 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.14  & sudo -E -s
+cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.112 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.112  & sudo -E -s
+cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.91 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.91  & sudo -E -s
+
+3. (All meachine) Install ansible by command:
+sudo apt-get update && sudo apt-get install -y software-properties-common && sudo -E apt-add-repository -y ppa:ansible/ansible && sudo apt-get update && sudo apt-get install -y ansible python3.7
+
+4. (AnsibleCLI) Check and Update inventory by command:
+cd ~/Lab_Setup
+vi ./inventory.ini
+
+5. (AnsibleCLI) Check connection and Inventory by command:
+cd ~/Lab_Setup
+export ANSIBLE_DEPRECATION_WARNINGS=false
+ansible ansiblecli -i ./inventory.ini -m ping
+ansible ansibletower -i ./inventory.ini -m ping
+ansible linux1 -i ./inventory.ini -m ping
+ansible ansible -i ./inventory.ini -m ping
+
+6. (AnsibleCLI) Run get informaiton from all host by command:
+cd ~/Lab_Setup
+export ANSIBLE_DEPRECATION_WARNINGS=false
+ansible linux1 -i ./inventory.ini -m setup 
+more getfact.yml
+ansible-playbook -i ./inventory.ini getfact.yml
+
+7. (AnslbleCLI) Check destination host for docker install by command:
+ssh -A 10.21.2.112
+docker --version
+exit
+
+ssh -A 10.21.2.91
+docker --version
+exit
+
+8. (AnsibleCLI) Install docker container on target host and start nginx container by command:
+cd ~/Lab_Setup
+export ANSIBLE_DEPRECATION_WARNINGS=false
+more installdockernginx.yml
+ansible-playbook -i ./inventory.ini installdockernginx.yml
+
+9. (AnsibleCLI) SSH for Check and Open URL
+ssh -A 10.21.2.91
+docker --version
+sudo docker container ls
+exit
+
+10. (Local) Open browser for check web on public ip of linux host
+http://<public ip of host>
+
+11. (AnsibleCLI) Stop docker container on target host by command:
+cd ~/Lab_Setup
+export ANSIBLE_DEPRECATION_WARNINGS=false
+more stopdockernginx.yml
+ansible-playbook -i ./inventory.ini stopdockernginx.yml
+
+12. (AnsibleCLI) SSH for Check and Open URL
+ssh -A 10.21.2.91
+docker --version
+sudo docker container ls
+exit
+
+=================================================================================================================================================
+AnsibleTower / AWX
+=================================================================================================================================================
+13. (AnsibleCLI) Install docker container on ansible tower host by command:
+cd ~/Lab_Setup
+export ANSIBLE_DEPRECATION_WARNINGS=false
+more installdockernginx.yml
+ansible-playbook -i ./inventory.ini installdockeransibletower.yml
+
+15. (Local) SCP project to AnsibleTower
+scp -i ~/.ssh/lab_gluster.pem -r ~/Work/Ansible/Lab_Setup ubuntu@<ansibletower public ip>:/home/ubuntu
+
+
+14. (AnsibleTower) Setup and Deploy AWX by command:
+sudo su -
+git clone --depth 50 https://github.com/ansible/awx.git
+cd awx/installer/
+ansible-playbook -i inventory install.yml
+
+15. (AnsibleTower) Wait 10 min before start open web of Ansible tower
+username: admin
+password: password
+
+16. (AnsibleTower) Add Credential for target machine
+
+17. (AnsibleTower) Add Inventory for target machine 10.21.2.112

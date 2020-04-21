@@ -1,0 +1,15 @@
+---
+- name: Purge Task
+  hosts: ansibletower
+  gather_facts: true
+  become: true
+  tasks:    
+    - name: Stop AnsibleTower Container
+      docker_container:
+        name: "tower"
+        state: started
+
+    - name: Remove AnsibleTower Container
+      docker_container:
+        name: "tower"
+        state: absent

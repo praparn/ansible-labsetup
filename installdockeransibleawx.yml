@@ -1,0 +1,48 @@
+---
+- name: INSTALL Docker CE
+  hosts: ansibletower
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Install Aptitude using APT
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install Required System Packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python-pip', 'virtualenv', 'python-setuptools']
+
+    - name: Add Docker GPG APT Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: Install Docker-Compose for Python
+      pip:
+        name: docker-compose
+
+    - name: Download DockerCompose File
+      get_url:
+        url: https://raw.githubusercontent.com/geerlingguy/awx-container/master/docker-compose.yml
+        dest: /home/ubuntu/docker-compose.yml
+        mode: '0777'
+        
+    - name: Create and Start AWX with Compose
+      docker_compose:
+        project_src: /home/ubuntu
+        build: yes
+      register: output
+
+    - debug:
+        var: output

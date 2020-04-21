@@ -1,0 +1,16 @@
+---
+- name: Purge Task
+  hosts: ansibletower
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Stop AWX with Compose
+      docker_compose:
+        project_src: /home/ubuntu
+        build: no
+        stopped: yes
+    - name: Remove AWX with Compose
+      docker_compose:
+        project_src: /home/ubuntu
+        build: no
+        state: absent

@@ -1,0 +1,15 @@
+---
+- name: Purge Task
+  hosts: linux1
+  gather_facts: true
+  become: true
+  tasks:    
+    - name: Stop NGINX Container
+      docker_container:
+        name: "nginx"
+        state: started
+
+    - name: Remove NGINX Container
+      docker_container:
+        name: "nginx"
+        state: absent

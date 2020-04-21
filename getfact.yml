@@ -1,0 +1,17 @@
+---
+- name: GET INFORMATION FROM TARGET HOST
+  hosts: all
+  gather_facts: true
+  tasks:
+  - debug:
+      msg: 
+        - "Architecture: {{ ansible_architecture }}"
+        - "EC2 Type: {{ ansible_product_name }}"
+        - "Detail OS: {{ ansible_distribution }} - {{ ansible_distribution_version }}"
+        - "Kernel Version: {{ ansible_kernel_version }}"
+        - "Domain: {{ ansible_domain }}"
+        - "Hostname: {{ ansible_hostname }}"
+        - "FQDN: {{ ansible_fqdn }}"
+        - "IP Address (IPv4): {{ ansible_all_ipv4_addresses }}"
+        - "IP Address (IPv6): {{ ansible_all_ipv6_addresses }}"
+...
