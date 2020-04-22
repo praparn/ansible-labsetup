@@ -40,5 +40,6 @@
     - name: Git Clone Ansible AWX
       git:
         repo: https://github.com/ansible/awx.git
-        dest: /home/ubuntu/awx
+        dest: /home/ubuntu
+        clone: yes
         depth: 50

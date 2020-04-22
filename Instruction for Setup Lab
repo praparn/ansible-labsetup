@@ -7,10 +7,10 @@ AnsibleCLI:                 10.21.2.187           54.169.229.199          ip-10-
 AnsibleTower:               10.21.2.74            52.77.227.113           ip-10-21-2-74.ap-southeast-1.compute.internal       ssh -i "lab_gluster.pem" ubuntu@<public ip>
 Host:                       10.21.2.244           13.229.239.33           ip-10-21-2-244.ap-southeast-1.compute.internal        ssh -i "lab_gluster.pem" ubuntu@<public ip>
 =============================================================================================================
-1. (local) SCP pem file and WorkShop to Ansible1
+1. (local/AnsibleCLI) SCP pem file and WorkShop to Ansible1
 scp -i ~/.ssh/lab_gluster.pem ~/.ssh/lab_gluster.pem ubuntu@54.169.229.199:/home/ubuntu
-scp -i ~/.ssh/lab_gluster.pem -r ~/Work/Ansible/Lab_Setup ubuntu@54.169.229.199:/home/ubuntu
 ssh -i ~/.ssh/lab_gluster.pem ubuntu@54.169.229.199
+git clone https://github.com/praparn/ansible-labsetup.git
 
 2. (AnsibleCLI) Generate KeyFile and Trust (AnsibleCLI)
 chmod 400 ~/lab_gluster.pem
@@ -26,11 +26,11 @@ cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.244 "cat >> ~/.ssh
 sudo apt-get update && sudo apt-get install -y software-properties-common && sudo -E apt-add-repository -y ppa:ansible/ansible && sudo apt-get update && sudo apt-get install -y ansible python3.7
 
 4. (AnsibleCLI) Check and Update inventory by command:
-cd ~/Lab_Setup
+cd ~/ansible-labsetup
 vi ./inventory.ini
 
 5. (AnsibleCLI) Check connection and Inventory by command:
-cd ~/Lab_Setup
+cd ~/ansible-labsetup
 export ANSIBLE_DEPRECATION_WARNINGS=false
 ansible ansiblecli -i ./inventory.ini -m ping
 ansible ansibletower -i ./inventory.ini -m ping
@@ -38,7 +38,7 @@ ansible linux1 -i ./inventory.ini -m ping
 ansible ansible -i ./inventory.ini -m ping
 
 6. (AnsibleCLI) Run get informaiton from all host by command:
-cd ~/Lab_Setup
+cd ~/ansible-labsetup
 export ANSIBLE_DEPRECATION_WARNINGS=false
 ansible linux1 -i ./inventory.ini -m setup 
 more getfact.yml
@@ -54,7 +54,7 @@ docker --version
 exit
 
 8. (AnsibleCLI) Install docker container on target host and start nginx container by command:
-cd ~/Lab_Setup
+cd ~/ansible-labsetup
 export ANSIBLE_DEPRECATION_WARNINGS=false
 more installdockernginx.yml
 ansible-playbook -i ./inventory.ini installdockernginx.yml
@@ -69,7 +69,7 @@ exit
 http://<public ip of host>
 
 11. (AnsibleCLI) Stop docker container on target host by command:
-cd ~/Lab_Setup
+cd ~/ansible-labsetup
 export ANSIBLE_DEPRECATION_WARNINGS=false
 more stopdockernginx.yml
 ansible-playbook -i ./inventory.ini stopdockernginx.yml
@@ -84,13 +84,14 @@ exit
 AnsibleTower / AWX
 =================================================================================================================================================
 13. (AnsibleCLI) Install docker container on ansible tower host by command:
-cd ~/Lab_Setup
+cd ~/ansible-labsetup
 export ANSIBLE_DEPRECATION_WARNINGS=false
-more installdockernginx.yml
-ansible-playbook -i ./inventory.ini installdockeransibletower.yml
+more installdockeransibleawx.yml
+ansible-playbook -i ./inventory.ini installdockeransibleawx.yml
 
-14. (Local) SCP project to AnsibleTower
-scp -i ~/.ssh/lab_gluster.pem -r ~/Work/Ansible/Lab_Setup ubuntu@<ansibletower public ip>:/home/ubuntu
+14. (AnsibleTower) Git Clone project to AnsibleTower
+ssh -A 10.21.2.244
+git clone https://github.com/praparn/ansible-labsetup.git
 
 15. (AnsibleTower) Setup and Deploy AWX by command:
 #sudo su -
