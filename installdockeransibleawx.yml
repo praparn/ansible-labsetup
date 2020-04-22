@@ -43,3 +43,9 @@
         dest: /home/ubuntu/awx
         clone: yes
         depth: 50
+
+    - name: Git Clone PlayBook
+      git:
+        repo: https://github.com/praparn/ansible-labsetup.git
+        dest: /home/ubuntu/ansible-labsetup
+        clone: yes

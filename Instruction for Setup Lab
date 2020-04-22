@@ -90,8 +90,7 @@ more installdockeransibleawx.yml
 ansible-playbook -i ./inventory.ini installdockeransibleawx.yml
 
 14. (AnsibleTower) Git Clone project to AnsibleTower
-ssh -A 10.21.2.244
-git clone https://github.com/praparn/ansible-labsetup.git
+ssh -A 10.21.2.74
 
 15. (AnsibleTower) Setup and Deploy AWX by command:
 #sudo su -
