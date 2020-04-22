@@ -9,7 +9,7 @@
 
     - name: Install Required System Packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python-pip', 'virtualenv', 'python-setuptools']
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python-pip', 'virtualenv', 'python-setuptools', 'nodejs', 'npm']
 
     - name: Add Docker GPG APT Key
       apt_key:
@@ -32,17 +32,13 @@
       pip:
         name: docker-compose
 
-    - name: Download DockerCompose File
-      get_url:
-        url: https://raw.githubusercontent.com/geerlingguy/awx-container/master/docker-compose.yml
-        dest: /home/ubuntu/docker-compose.yml
-        mode: '0777'
-        
-    - name: Create and Start AWX with Compose
-      docker_compose:
-        project_src: /home/ubuntu
-        build: yes
-      register: output
+    - name: NPM Install Global
+      npm:
+        name: npm
+        global: yes
 
-    - debug:
-        var: output
+    - name: Git Clone Ansible AWX
+      git:
+        repo: https://github.com/ansible/awx.git
+        dest: /home/ubuntu/awx
+        depth: 50

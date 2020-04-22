@@ -10,6 +10,7 @@ Host:                       10.21.2.244           13.229.239.33           ip-10-
 1. (local) SCP pem file and WorkShop to Ansible1
 scp -i ~/.ssh/lab_gluster.pem ~/.ssh/lab_gluster.pem ubuntu@54.169.229.199:/home/ubuntu
 scp -i ~/.ssh/lab_gluster.pem -r ~/Work/Ansible/Lab_Setup ubuntu@54.169.229.199:/home/ubuntu
+ssh -i ~/.ssh/lab_gluster.pem ubuntu@54.169.229.199
 
 2. (AnsibleCLI) Generate KeyFile and Trust (AnsibleCLI)
 chmod 400 ~/lab_gluster.pem
@@ -44,7 +45,7 @@ more getfact.yml
 ansible-playbook -i ./inventory.ini getfact.yml
 
 7. (AnslbleCLI) Check destination host for docker install by command:
-ssh -10.21.2.74
+ssh -A 10.21.2.74
 docker --version
 exit
 
@@ -92,9 +93,9 @@ ansible-playbook -i ./inventory.ini installdockeransibletower.yml
 scp -i ~/.ssh/lab_gluster.pem -r ~/Work/Ansible/Lab_Setup ubuntu@<ansibletower public ip>:/home/ubuntu
 
 15. (AnsibleTower) Setup and Deploy AWX by command:
-sudo su -
-git clone --depth 50 https://github.com/ansible/awx.git
-cd awx/installer/
+#sudo su -
+#git clone --depth 50 https://github.com/ansible/awx.git
+cd /home/ubuntu/awx/installer/
 ansible-playbook -i inventory install.yml
 
 16. (AnsibleTower) Wait 10 min before start open web of Ansible tower
