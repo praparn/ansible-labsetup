@@ -122,7 +122,7 @@ SIGNED SSH CERTIFICATED:
 (Click: Save)
 
 20. (AnsibleTower) Create New Project
-Name: Demo 
+Name: Demo
 Organization: Default
 SCM Type: git
 SCM URL: https://github.com/praparn/ansible-labsetup.git
@@ -137,7 +137,7 @@ Playbook: getfact.yml
 Credential: ssh
 (Click: Save & Lunch)
 
-21. (AnsibleTower) Create New Template (InstallNGINX)
+22. (AnsibleTower) Create New Template (InstallNGINX)
 Name: InstallNGINX
 Job Type: Run
 Inventory: TargetHost
@@ -145,3 +145,5 @@ Project: Default
 Playbook: installdockernginxansibletower.yml
 Credential: ssh
 (Click: Save & Lunch)
+
+23. (Local) Open webpage for targethost
