@@ -93,10 +93,11 @@ ansible-playbook -i ./inventory.ini installdockeransibleawx.yml
 ssh -A 10.21.2.74
 
 15. (AnsibleTower) Setup and Deploy AWX by command:
-#sudo su -
-#git clone --depth 50 https://github.com/ansible/awx.git
+sudo su -
 cd /home/ubuntu/awx/installer/
 ansible-playbook -i inventory install.yml
+sudo docker ps
+curl ifconfig.co
 
 16. (AnsibleTower) Wait 10 min before start open web of Ansible tower
 username: admin
@@ -108,7 +109,7 @@ Organization: Default
 (Click: Save)
 
 18. (AnsibleTower) Under Inventory click "Add Host"
-HOSTNAME: ip-X-X-X-X.ap-southeast-1.compute.internal
+HOSTNAME: ip-10-21-2-X.ap-southeast-1.compute.internal
 (Click: Save)
 
 19. (AnsibleTower) Create Credential under Organization "Default" as below
@@ -127,7 +128,7 @@ SCM Type: git
 SCM URL: https://github.com/praparn/ansible-labsetup.git
 (Click: Save)
 
-21. (AnsibleTower) Create New Template
+21. (AnsibleTower) Create New Template (GetFact)
 Name: GetFact
 Job Type: Run
 Inventory: TargetHost
@@ -136,3 +137,11 @@ Playbook: getfact.yml
 Credential: ssh
 (Click: Save & Lunch)
 
+21. (AnsibleTower) Create New Template (InstallNGINX)
+Name: InstallNGINX
+Job Type: Run
+Inventory: TargetHost
+Project: Default
+Playbook: installdockernginxansibletower.yml
+Credential: ssh
+(Click: Save & Lunch)
