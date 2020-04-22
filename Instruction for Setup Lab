@@ -3,12 +3,12 @@ AMI: ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200112 (ami-09a4a9
 
 =============================================================================================================
 Inventory:                  Private IP            PublicIP                DNS:                                                 ssh
-AnsibleCLI:                 10.21.2.187           54.169.229.199          ip-10-21-2-187.ap-southeast-1.compute.internal        ssh -i "lab_gluster.pem" ubuntu@<public ip>
-AnsibleTower:               10.21.2.74            52.77.227.113           ip-10-21-2-74.ap-southeast-1.compute.internal       ssh -i "lab_gluster.pem" ubuntu@<public ip>
-Host:                       10.21.2.244           13.229.239.33           ip-10-21-2-244.ap-southeast-1.compute.internal        ssh -i "lab_gluster.pem" ubuntu@<public ip>
+AnsibleCLI:                 10.21.2.138           X.X.X.X           ip-10-21-2-138.ap-southeast-1.compute.internal        ssh -i "lab_gluster.pem" ubuntu@<public ip>
+AnsibleTower:               10.21.2.56            X.X.X.X           ip-10-21-2-56.ap-southeast-1.compute.internal       ssh -i "lab_gluster.pem" ubuntu@<public ip>
+Host:                       10.21.2.198           X.X.X.X           ip-10-21-2-198.ap-southeast-1.compute.internal        ssh -i "lab_gluster.pem" ubuntu@<public ip>
 =============================================================================================================
 1. (local/AnsibleCLI) SCP pem file and WorkShop to Ansible1
-scp -i ~/.ssh/lab_gluster.pem ~/.ssh/lab_gluster.pem ubuntu@54.169.229.199:/home/ubuntu
+scp -i ~/.ssh/lab_gluster.pem ~/.ssh/lab_gluster.pem ubuntu@<public ip >:/home/ubuntu
 ssh -i ~/.ssh/lab_gluster.pem ubuntu@54.169.229.199
 git clone https://github.com/praparn/ansible-labsetup.git
 
@@ -18,9 +18,9 @@ eval $(ssh-agent)
 ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa
 ssh-add /home/ubuntu/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
-cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.187 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.187  & sudo -E -s
-cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.74 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.74  & sudo -E -s
-cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.244 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.244  & sudo -E -s
+cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.138 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.138  & sudo -E -s
+cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.56 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.56  & sudo -E -s
+cat ~/.ssh/id_rsa.pub | ssh -i lab_gluster.pem ubuntu@10.21.2.198 "cat >> ~/.ssh/authorized_keys"  & ssh -A 10.21.2.198  & sudo -E -s
 
 3. (All meachine) Install ansible by command:
 sudo apt-get update && sudo apt-get install -y software-properties-common && sudo -E apt-add-repository -y ppa:ansible/ansible && sudo apt-get update && sudo apt-get install -y ansible python3.7
@@ -45,11 +45,11 @@ more getfact.yml
 ansible-playbook -i ./inventory.ini getfact.yml
 
 7. (AnslbleCLI) Check destination host for docker install by command:
-ssh -A 10.21.2.74
+ssh -A 10.21.2.56
 docker --version
 exit
 
-ssh -A 10.21.2.244 
+ssh -A 10.21.2.198 
 docker --version
 exit
 
@@ -60,7 +60,7 @@ more installdockernginx.yml
 ansible-playbook -i ./inventory.ini installdockernginx.yml
 
 9. (AnsibleCLI) SSH for Check and Open URL
-ssh -A 10.21.2.244 
+ssh -A 10.21.2.198 
 docker --version
 sudo docker container ls
 exit
@@ -75,7 +75,7 @@ more stopdockernginx.yml
 ansible-playbook -i ./inventory.ini stopdockernginx.yml
 
 12. (AnsibleCLI) SSH for Check and Open URL
-ssh -A 10.21.2.244
+ssh -A 10.21.2.198
 docker --version
 sudo docker container ls
 exit
@@ -90,7 +90,7 @@ more installdockeransibleawx.yml
 ansible-playbook -i ./inventory.ini installdockeransibleawx.yml
 
 14. (AnsibleTower) Git Clone project to AnsibleTower
-ssh -A 10.21.2.74
+ssh -A 10.21.2.56
 
 15. (AnsibleTower) Setup and Deploy AWX by command:
 sudo su -
@@ -109,7 +109,7 @@ Organization: Default
 (Click: Save)
 
 18. (AnsibleTower) Under Inventory click "Add Host"
-HOSTNAME: ip-10-21-2-X.ap-southeast-1.compute.internal
+HOSTNAME: ip-10-21-2-198.ap-southeast-1.compute.internal
 (Click: Save)
 
 19. (AnsibleTower) Create Credential under Organization "Default" as below
@@ -147,3 +147,4 @@ Credential: ssh
 (Click: Save & Lunch)
 
 23. (Local) Open webpage for targethost
+http://<public ip of host>
